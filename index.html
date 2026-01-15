@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<!-- ビューポート設定：これがスマホ対応の肝です -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>言霊数秘エレメント診断ツール【完全版】</title>
+<style>
+  /* ▼▼ キラキラデザイン設定 ▼▼ */
+  body {
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 50%, #d4fc79 100%);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #4a4a4a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    /* スマホでの横スクロール防止 */
+    box-sizing: border-box; 
+    overflow-x: hidden;
+  }
+  
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .container {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    
+    /* スマホ向け調整：パディングを少し控えめに */
+    padding: 30px 20px;
+    border-radius: 25px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .container::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 60%);
+    transform: rotate(30deg);
+    pointer-events: none;
+  }
+
+  h1 { 
+    font-size: 22px; /* スマホで見やすいサイズ */
+    margin-bottom: 25px; 
+    font-weight: bold;
+    background: linear-gradient(45deg, #FF9A8B, #FF6A88, #FF99AC);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  label { 
+    display: block; 
+    text-align: left; 
+    font-weight: bold; 
+    margin-top: 15px; 
+    font-size: 14px; 
+    color: #666;
+    text-shadow: 1px 1px 0 #fff;
+    position: relative;
+    z-index: 1;
+  }
+  .note { font-size: 14px; color: #ff7675; font-weight: normal; margin-left: 5px; }
+  
+  input {
+    width: 100%;
+    padding: 14px;
+    margin-top: 8px;
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 15px;
+    font-size: 16px; /* iOSでズームされない最適サイズ */
+    box-sizing: border-box;
+    transition: 0.3s;
+    background: rgba(255,255,255,0.6);
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 1;
+    /* スマホでの入力体験向上 */
+    -webkit-appearance: none;
+  }
+  input:focus { 
+    border-color: #a29bfe; 
+    outline: none; 
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 10px rgba(162, 155, 254, 0.4);
+  }
+  
+  button {
+    background: linear-gradient(45deg, #a18cd1 0%, #fbc2eb 100%);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 16px;
+    margin-top: 35px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(161, 140, 209, 0.4);
+    transition: 0.3s;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    /* スマホでのタップハイライトを消す */
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: 0.5s;
+  }
+  button:hover::after { left: 100%; }
+  button:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 8px 25px rgba(161, 140, 209, 0.6); 
+  }
+  /* スマホで押した時の沈み込み */
+  button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(161, 140, 209, 0.4); 
+  }
+  
+  #resultArea {
+    display: none;
+    margin-top: 35px;
+    padding: 25px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    text-align: left;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: bounceIn 0.8s cubic-bezier(0.215, 0.61, 0.355, 1);
+    border: 1px solid #fff;
+    position: relative;
+    z-index: 1;
+  }
+  @keyframes bounceIn {
+    0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+    70% { opacity: 1; transform: scale(1.02) translateY(0); }
+    100% { transform: scale(1); }
+  }
+  
+  .res-label { font-size: 11px; color: #999; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+  .res-value { font-size: 22px; font-weight: bold; color: #444; margin-bottom: 20px; }
+  
+  .char-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    border-left: 5px solid #ccc;
+    margin-top: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  }
+  .char-name { font-size: 18px; font-weight: bold; color: #333; line-height: 1.5; }
+  
+  .footer { margin-top: 25px; font-size: 12px; color: #888; text-shadow: 1px 1px 0 rgba(255,255,255,0.5); position: relative; z-index: 1; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🔮 言霊数秘エレメント診断</h1>
+  
+  <label>下のお名前（ひらがな）<span class="note">※名字は不要</span></label>
+  <input type="text" id="nameInput" placeholder="例：れんか" />
+  
+  <label>生年月日（西暦8桁）</label>
+  <!-- type="tel" にすることでスマホで数字キーパッドが出やすくなります -->
+  <input type="tel" id="birthInput" placeholder="例：19900218" maxlength="8" pattern="\d*" />
+  
+  <button onclick="calculate()">✨ 運命を診断する ✨</button>
+
+  <div id="resultArea">
+    <div class="res-label">TYPE</div>
+    <div class="res-value">🌿 民タイプ：<span id="minTypeDisplay"></span></div>
+    
+    <div class="res-label">NUMBER</div>
+    <div class="res-value">🔢 運命数：<span id="numberDisplay"></span></div>
+    
+    <div class="char-box" id="charBox">
+      <div class="res-label">YOUR CHARACTER</div>
+      <div class="char-name" id="charNameDisplay">---</div>
+    </div>
+    
+    <div style="margin-top:20px; font-size:14px; color:#555; text-align:center; background: rgba(255,255,255,0.5); padding: 10px; border-radius: 10px;">
+      👉 詳しい性格はインスタの<br>
+      <!-- ここに15種類の色名が表示されます -->
+      <b id="postColorText" style="font-size: 1.2em; text-decoration: underline; text-decoration-style: dotted;"></b>を見てね！
+    </div>
+  </div>
+  
+  <div class="footer">© Kotodama Element Reading</div>
+</div>
+
+<script>
+// ▼▼【完全版】全180種類 キャラクターデータ一覧 ▼▼
+const charList = {
+  // ■基本の5民
+  "地の民": { 1:"未来を切り拓く堅実な開拓者", 2:"安定と絆を育む大地の守護者", 3:"笑顔を広げる豊穣のクリエイター", 4:"大地に根差す堅牢な構築者", 5:"変化に挑む冒険的開拓者", 6:"愛と絆を守る安定の守護者", 7:"大地の真理を探求する哲学者", 8:"現実を動かす現実派リーダー", 9:"世界を癒す大地の賢者", 11:"未来を照らす堅実な預言者", 22:"理想郷を築く大地の巨匠", 33:"無限の愛で世界を包む大地の聖者" },
+  "水の民": { 1:"感情で未来を切り拓く癒しの開拓者", 2:"優しさと絆を育む水の守護者", 3:"喜びを広げる感性の表現者", 4:"流れを支える堅実な建築者", 5:"自由に流れる冒険の旅人", 6:"愛情を育む癒しの守護者", 7:"水面下の真実を探求する探究者", 8:"感情を現実化するビジネスリーダー", 9:"世界を癒す愛の賢者", 11:"未来を感じる水の預言者", 22:"社会を癒す潤いの巨匠", 33:"無償の愛を広げる水の聖者" },
+  "火の民": { 1:"情熱で未来を切り拓く開拓者", 2:"熱意と絆を育む炎の守護者", 3:"火花を散らす情熱の表現者", 4:"炎を地に根付かせる建設者", 5:"自由に燃え広がる冒険者", 6:"情熱で人を照らす守護者", 7:"炎の真理を探求する哲学者", 8:"情熱を成功に導く実務家", 9:"世界を熱で癒す賢者", 11:"未来を灯す炎の預言者", 22:"社会を燃え上がらせる巨匠", 33:"愛と情熱を注ぐ聖なる炎" },
+  "風の民": { 1:"風で未来を切り拓く自由な開拓者", 2:"風と絆をつなぐ調和の使者", 3:"風に乗る軽やかな表現者", 4:"風を現実に根付かせる安定者", 5:"世界を巡る自由な冒険者", 6:"優しさを運ぶ風の守護者", 7:"風の真理を探求する哲学者", 8:"風を活かす現実派ビジネスマン", 9:"風で世界を癒す賢者", 11:"未来を読む風の預言者", 22:"社会を動かす風の巨匠", 33:"無限の愛を運ぶ奇跡の風" },
+  "空の民": { 1:"直感で未来を切り拓く開拓者", 2:"空と絆をつなぐ柔らかな使者", 3:"ひらめきを舞う表現者", 4:"理想を現実に降ろす構築者", 5:"自由な発想で世界を巡る冒険者", 6:"愛と直感で癒す守護者", 7:"空の真理を探求する哲学者", 8:"直感を成功に導くビジネスマン", 9:"空の光で世界を癒す賢者", 11:"未来を読む直感の預言者", 22:"社会に理想を築く巨匠", 33:"無限の愛と直感を降ろす聖者" },
+
+  // ■混合の民（地系ミックス）
+  "湿原の民": { 1:"変化を受け入れる堅実な開拓者", 2:"安定と共感を育む湿原の守護者", 3:"柔軟に喜びを表現するクリエイター", 4:"感情に寄り添う建設的な支援者", 5:"変幻自在の流動的冒険者", 6:"優しさと安定を与える守護者", 7:"湿原の真理を探究する賢者", 8:"感情を武器に成功する実務家", 9:"大地と水で世界を癒す賢者", 11:"流れを読む湿原の預言者", 22:"社会に潤いをもたらす巨匠", 33:"無償の愛で世界を潤す聖者" },
+  "熔岩の民": { 1:"熱と安定で未来を切り拓く開拓者", 2:"熱意と支え合いを育む守護者", 3:"熱き喜びを放つ表現者", 4:"情熱を現実に固める築城者", 5:"炎と地を超える冒険者", 6:"家族を温める炎の守護者", 7:"熔岩の真理を探求する哲学者", 8:"熱意を現実に変える実務家", 9:"情熱と安定で癒す賢者", 11:"未来を熱で照らす預言者", 22:"巨大な理想を固める熔岩の巨匠", 33:"愛と炎で包む熔岩の聖者" },
+  "砂丘の民": { 1:"自由と堅実さで未来を切り拓く開拓者", 2:"風と大地を結ぶ守護者", 3:"軽やかに喜びを表現する旅人", 4:"砂丘に根差す安定の築城者", 5:"流れと地を越える冒険者", 6:"優しさを運ぶ大地の守護者", 7:"砂丘の真理を探求する賢者", 8:"風を活かして成功する実務家", 9:"砂丘の風で世界を癒す賢者", 11:"未来を運ぶ風と大地の預言者", 22:"大地と風で社会を築く巨匠", 33:"無償の愛を広げる風の大地の聖者" },
+  "空土の民": { 1:"理想を現実にする開拓者", 2:"夢と現実をつなぐ調和の案内人", 3:"夢を歌うクリエイティブな架け橋", 4:"天空の理想を大地に根付かせる築城者", 5:"自由にヴィジョンを渡る冒険者", 6:"愛と夢を育む守護者", 7:"理想の真理を探求する哲学者", 8:"天空の構想を現実にする実業家", 9:"地上に愛と夢を広げる賢者", 11:"未来を降ろす直感の預言者", 22:"理想世界を築くマスタービルダー", 33:"無限の愛と夢を地上に降ろす天使" },
+
+  // ■混合の民（水・火系ミックス）
+  "蒸気の民": { 1:"感情の熱で未来を切り拓く開拓者", 2:"情熱と共感をつなぐ架け橋", 3:"感情を舞い上がらせるエンターテイナー", 4:"情熱を着実に形にする職人", 5:"感情の波に乗る自由な旅人", 6:"情熱で人を癒す守護者", 7:"感情の真実を探求する賢者", 8:"情熱と感情を成功へ導く実務家", 9:"世界を感動で包む光の使者", 11:"感情の未来を読む情熱の預言者", 22:"情熱で世界を動かす巨匠", 33:"無限の愛と情熱で癒しを広げる聖者" },
+  "旋風の民": { 1:"情熱の風で新世界を切り拓く開拓者", 2:"熱と知恵を繋ぐ風の調和者", 3:"情熱を言葉に乗せるエンターテイナー", 4:"変化を地に根付かせる情熱の建築士", 5:"情熱を翼に世界を駆ける冒険者", 6:"仲間と共に未来を運ぶ守護者", 7:"風と炎の本質を探求する賢者", 8:"情熱と知性で世界を動かす実務家", 9:"世界を癒し変える愛の旋風", 11:"未来を運ぶ情熱の預言者", 22:"世界を変える嵐を起こす巨匠", 33:"愛と情熱で人々を包み込む奇跡の風" },
+  "光焔の民": { 1:"直感と情熱で未来を切り拓く開拓者", 2:"情熱と直感をつなぐ調和の案内人", 3:"閃きを踊らせる情熱の表現者", 4:"直感を地に根付かせる情熱の築城者", 5:"インスピレーションを求める自由な旅人", 6:"直感と愛で世界を照らす守護者", 7:"ひらめきの本質を探求する哲学者", 8:"情熱と直感で成功を掴む実務家", 9:"情熱と光で世界を癒す奉仕者", 11:"未来を照らす光焔の預言者", 22:"インスピレーションで世界を創る巨匠", 33:"無限の愛と光を注ぐ奇跡のクリエイター" },
+
+  // ■混合の民（その他ミックス）
+  "霧の民": { 1:"流れと感情を切り拓く開拓者", 2:"感情と知性をつなぐ調和の使者", 3:"感性で世界を踊らせる表現者", 4:"流れの中に基盤を築く安定者", 5:"自由に漂う感性の旅人", 6:"柔らかな癒しを運ぶ守護者", 7:"感情と知恵の深層を探る探究者", 8:"感情を現実に変える実務家", 9:"世界を優しく包む共感の賢者", 11:"未来の感情を読む預言者", 22:"繊細な感性で社会を動かす創造者", 33:"無限の愛で世界を包む慈愛の霧" },
+  "夢海の民": { 1:"夢と感情で未来を切り拓く開拓者", 2:"感情と夢をつなぐ共鳴者", 3:"夢を奏でる感性のアーティスト", 4:"幻想を現実に降ろす築城者", 5:"夢と感情を乗せた自由な旅人", 6:"癒しの夢を届ける守護者", 7:"幻想の奥を探る深層探究者", 8:"夢を現実に変える実務家", 9:"世界を夢で包み込む癒しの賢者", 11:"未来を紡ぐ夢の預言者", 22:"幻想を現実社会に築く巨匠", 33:"無限の愛で夢を降ろす光の存在" },
+  "星風の民": { 1:"未来を切り拓く知性の開拓者", 2:"未来と人をつなぐ優しき使者", 3:"星のヴィジョンを語るクリエイター", 4:"理想を現実に落とす堅実な設計者", 5:"未来を運ぶ自由な旅人", 6:"未来の絆を育む守護者", 7:"見えない未来を探求する賢者", 8:"未来の流れを掴む現実的リーダー", 9:"未来の風で世界を癒す賢者", 11:"未来を語る預言者", 22:"未来の基盤を築く巨匠", 33:"無限の愛と光を運ぶ奇跡の風" }
+};
+
+// ▼▼ ロジック処理エリア ▼▼
+function calculate() {
+  const name = document.getElementById('nameInput').value.trim();
+  const birthStr = document.getElementById('birthInput').value.toString();
+
+  if(!name || birthStr.length < 8) {
+    alert("お名前と生年月日(8桁)を正しく入力してください");
+    return;
+  }
+
+  // 1. 運命数計算
+  const destinyNum = getDestinyNumber(birthStr);
+
+  // 2. 言霊エレメント計算
+  const sounds = getFirstTwoSounds(name);
+  if(sounds.length < 1) {
+    alert("お名前をひらがなで入力してください");
+    return;
+  }
+  const el1 = getElement(sounds[0]);
+  const el2 = sounds.length > 1 ? getElement(sounds[1]) : el1; 
+  const minType = getMinType(el1, el2);
+
+  // 3. キャラクター名取得
+  let charName = "診断エラー";
+  if (charList[minType] && charList[minType][destinyNum]) {
+    charName = charList[minType][destinyNum];
+  } else {
+    charName = `${minType} (No.${destinyNum})`;
+  }
+
+  // 4. 表示更新
+  document.getElementById('minTypeDisplay').innerText = minType;
+  document.getElementById('numberDisplay').innerText = destinyNum;
+  document.getElementById('charNameDisplay').innerText = charName;
+  
+  // ▼▼ 色・デザイン設定（15種類フル対応版） ▼▼
+  // colorName: インスタ誘導文に表示される色名（シンプル版）
+  // textColor: その色名の文字色
+  
+  const typeDesign = {
+    // ■ 純血（基本5色）
+    "地の民": { 
+      border: "#e1b12c", 
+      bg: "linear-gradient(135deg, #fffcf0 0%, #ffeaa7 100%)",
+      colorName: "イエロー",
+      textColor: "#fbc531"
+    },
+    "水の民": { 
+      border: "#74b9ff", 
+      bg: "linear-gradient(135deg, #f0f8ff 0%, #dff9fb 100%)",
+      colorName: "ブルー",
+      textColor: "#0984e3"
+    },
+    "火の民": { 
+      border: "#ff7675", 
+      bg: "linear-gradient(135deg, #fff0f0 0%, #ffcccc 100%)",
+      colorName: "レッド",
+      textColor: "#d63031"
+    },
+    "風の民": { 
+      border: "#55efc4", 
+      bg: "linear-gradient(135deg, #f0fff4 0%, #c8f7dc 100%)",
+      colorName: "グリーン",
+      textColor: "#00b894"
+    },
+    "空の民": { 
+      border: "#a29bfe", 
+      bg: "linear-gradient(135deg, #f3f0ff 0%, #e0d4fc 100%)",
+      colorName: "パープル",
+      textColor: "#6c5ce7"
+    },
+
+    // ■ 混合（15種類のユニークカラー）
+    "湿原の民": { 
+      border: "#00cec9", 
+      bg: "linear-gradient(135deg, #fffcf0 0%, #81ecec 100%)",
+      colorName: "ターコイズ",
+      textColor: "#00cec9"
+    }, 
+    "熔岩の民": { 
+      border: "#e17055", 
+      bg: "linear-gradient(135deg, #fab1a0 0%, #e17055 100%)",
+      colorName: "オレンジ",
+      textColor: "#e17055"
+    }, 
+    "砂丘の民": { 
+      border: "#b2bec3", 
+      bg: "linear-gradient(135deg, #ffeaa7 0%, #dfe6e9 100%)",
+      colorName: "ベージュ",
+      textColor: "#636e72"
+    }, 
+    "空土の民": { 
+      border: "#fd79a8", 
+      bg: "linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%)",
+      colorName: "サーモンピンク",
+      textColor: "#fd79a8"
+    }, 
+
+    "蒸気の民": { 
+      border: "#e84393", 
+      bg: "linear-gradient(135deg, #74b9ff 0%, #ff7675 100%)",
+      colorName: "ローズ",
+      textColor: "#e84393"
+    }, 
+    "旋風の民": { 
+      border: "#00b894", 
+      bg: "linear-gradient(135deg, #f0fff4 0%, #ff7675 100%)",
+      colorName: "ライム",
+      textColor: "#00b894"
+    }, 
+    "光焔の民": { 
+      border: "#fd79a8", 
+      bg: "linear-gradient(135deg, #ff9ff3 0%, #feca57 100%)",
+      colorName: "コーラル",
+      textColor: "#fd79a8"
+    }, 
+
+    "霧の民": { 
+      border: "#81ecec", 
+      bg: "linear-gradient(135deg, #74b9ff 0%, #55efc4 100%)",
+      colorName: "ミント",
+      textColor: "#00cec9"
+    }, 
+    "夢海の民": { 
+      border: "#6c5ce7", 
+      bg: "linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%)",
+      colorName: "ラベンダー",
+      textColor: "#6c5ce7"
+    }, 
+    "星風の民": { 
+      border: "#0984e3", 
+      bg: "linear-gradient(135deg, #55efc4 0%, #74b9ff 100%)",
+      colorName: "インディゴ",
+      textColor: "#0984e3"
+    }  
+  };
+
+  // デザイン適用
+  const design = typeDesign[minType] || typeDesign["空の民"];
+  
+  // HTMLへの反映
+  const resultArea = document.getElementById('resultArea');
+  const charBox = document.getElementById('charBox');
+
+  // 枠線と背景
+  resultArea.style.borderTop = `5px solid ${design.border}`;
+  charBox.style.borderLeft = `5px solid ${design.border}`;
+  charBox.style.background = design.bg;
+
+  resultArea.style.display = "block";
+  
+  // インスタ誘導テキスト（15種類の色名を表示）
+  const postColorText = document.getElementById('postColorText');
+  postColorText.innerText = `「${design.colorName}の投稿」`;
+  postColorText.style.color = design.textColor;
+}
+
+// 数秘計算
+function getDestinyNumber(str) {
+  let sum = 0;
+  for(let char of str) sum += parseInt(char);
+  while(sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
+    let temp = 0;
+    String(sum).split('').forEach(n => temp += parseInt(n));
+    sum = temp;
+  }
+  return sum;
+}
+
+// 名前処理
+function getFirstTwoSounds(name) {
+  const dakutenMap = {
+    'が':'か','ぎ':'き','ぐ':'く','げ':'け','ご':'こ',
+    'ざ':'さ','じ':'し','ず':'す','ぜ':'せ','ぞ':'そ',
+    'だ':'た','ぢ':'ち','づ':'つ','で':'て','ど':'と',
+    'ば':'は','び':'ひ','ぶ':'ふ','べ':'へ','ぼ':'ほ',
+    'ぱ':'は','ぴ':'ひ','ぷ':'ふ','ぺ':'へ','ぽ':'ほ'
+  };
+  let cleanName = "";
+  for(let i=0; i<name.length; i++) {
+    let char = name[i];
+    if(char === 'っ' || char === 'ッ' || char === ' ' || char === '　') continue;
+    if(dakutenMap[char]) char = dakutenMap[char];
+    cleanName += char;
+  }
+  let sounds = [];
+  for(let i=0; i<cleanName.length; i++) {
+    let char = cleanName[i];
+    if(['ゃ','ゅ','ょ','ぁ','ぃ','ぅ','ぇ','ぉ'].includes(char)) continue; 
+    sounds.push(char);
+    if(sounds.length >= 2) break;
+  }
+  return sounds;
+}
+
+// エレメント変換
+function getElement(char) {
+  const table = {
+    'あ':'空','い':'空','う':'空','え':'空','お':'空',
+    'か':'火','き':'火','く':'火','け':'火','こ':'火',
+    'さ':'風','し':'風','す':'風','せ':'風','そ':'風',
+    'た':'地','ち':'地','つ':'地','て':'地','と':'地',
+    'な':'水','に':'水','ぬ':'水','ね':'水','の':'水',
+    'は':'火','ひ':'火','ふ':'火','へ':'火','ほ':'火',
+    'ま':'地','み':'地','む':'地','め':'地','も':'地',
+    'や':'水','ゆ':'水','よ':'水',
+    'ら':'風','り':'風','る':'風','れ':'風','ろ':'風',
+    'わ':'空','を':'空','ん':'空'
+  };
+  return table[char] || '空';
+}
+
+// 民タイプ決定
+function getMinType(e1, e2) {
+  if(e1 === e2) return e1 + "の民";
+  const key = [e1, e2].sort().join("");
+  const mixMap = {
+    "地水": "湿原の民", "地火": "熔岩の民", "地風": "砂丘の民", "地空": "空土の民",
+    "水火": "蒸気の民", "水風": "霧の民", "水空": "夢海の民",
+    "火風": "旋風の民", "火空": "光焔の民", "空風": "星風の民"
+  };
+  return mixMap[key] || "不明な民";
+}
+</script>
+
+</body>
+</html>
